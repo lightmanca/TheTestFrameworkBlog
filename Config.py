@@ -3,11 +3,12 @@ import os
 
 import sys
 
-
 class Config:
+    LOGGER_ID = "API SAMPLE TESTS"
     CONFIG_DIR = 'ConfigFiles'
     COMMON_CONFIG_SECTION = 'common'
     ENV_CONFIG_SECTION = 'env-qa'
+    LOG_FILE_NAME = "testlog.log"
 
     config_file_name = None
 
@@ -18,6 +19,12 @@ class Config:
 
     twitter_api_base_url = None
 
+    logging_level = None
+    logging_path = None
+
+    logger = None
+
+    # Warning!  The code to set up logging requires this config class.  Do not do any logging in __init__
     def __init__(self, config_file_name):
         try_path = os.path.join(self.current_dir, config_file_name)
         if os.path.exists(try_path):
@@ -28,6 +35,7 @@ class Config:
             print("\n\nFatal Error: Config file: {} not found.".format(self.config_file_name))
             sys.exit()
 
+    # Warning!  The code to set up logging requires this config class.  Do not do any logging in read_config
     def read_config(self):
         config = configparser.ConfigParser()
         config.read(self.config_file_name)
@@ -35,6 +43,8 @@ class Config:
         self.consumer_secret = config[self.COMMON_CONFIG_SECTION]['consumer_secret']
         self.access_token = config[self.COMMON_CONFIG_SECTION]['access_token']
         self.access_token_secret = config[self.COMMON_CONFIG_SECTION]['access_token_secret']
+        self.logging_level = config[self.COMMON_CONFIG_SECTION]['logging_level']
+        self.logging_path = config[self.COMMON_CONFIG_SECTION]['logging_path']
 
         self.twitter_api_base_url = config[self.ENV_CONFIG_SECTION]['twitter_api_base_url']
 
