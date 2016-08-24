@@ -3,6 +3,9 @@ import os
 
 import sys
 
+from Helpers.CredsContainer import CredsContainer
+
+
 class Config:
     LOGGER_ID = "API SAMPLE TESTS"
     CONFIG_DIR = 'ConfigFiles'
@@ -12,11 +15,7 @@ class Config:
 
     config_file_name = None
 
-    consumer_key = None
-    consumer_secret = None
-    access_token = None
-    access_token_secret = None
-
+    twitter_auth_creds = None
     twitter_api_base_url = None
 
     logging_level = None
@@ -39,10 +38,10 @@ class Config:
     def read_config(self):
         config = configparser.ConfigParser()
         config.read(self.config_file_name)
-        self.consumer_key = config[self.COMMON_CONFIG_SECTION]['consumer_key']
-        self.consumer_secret = config[self.COMMON_CONFIG_SECTION]['consumer_secret']
-        self.access_token = config[self.COMMON_CONFIG_SECTION]['access_token']
-        self.access_token_secret = config[self.COMMON_CONFIG_SECTION]['access_token_secret']
+        self.twitter_auth_creds = CredsContainer(config[self.COMMON_CONFIG_SECTION]['consumer_key'],
+                                                 config[self.COMMON_CONFIG_SECTION]['consumer_secret'],
+                                                 config[self.COMMON_CONFIG_SECTION]['access_token'],
+                                                 config[self.COMMON_CONFIG_SECTION]['access_token_secret'])
         self.logging_level = config[self.COMMON_CONFIG_SECTION]['logging_level']
         self.logging_path = config[self.COMMON_CONFIG_SECTION]['logging_path']
 

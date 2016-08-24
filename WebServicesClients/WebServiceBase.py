@@ -16,19 +16,11 @@ class HttpMethod(Enum):
 
 
 class WebServiceBase:
-
-    consumer_key = None
-    consumer_secret = None
-    access_token = None
-    access_token_secret = None
-
+    oauth_creds = None
     logger = None
 
-    def __init__(self, base_url, consumer_key, consumer_secret, access_token, access_token_secret, logger_id):
-        self.consumer_key = consumer_key
-        self.consumer_secret = consumer_secret
-        self.access_token = access_token
-        self.access_token_secret = access_token_secret
+    def __init__(self, base_url, auth_creds, logger_id):
+        self.oauth_creds = auth_creds
         self.logger = logging.getLogger(logger_id)
         # lets do some funky python stuff to add the base url to all our urls
         url_vars = [attr for attr in dir(self) if not callable(attr) and attr.endswith("_URL")]
@@ -55,10 +47,10 @@ class WebServiceBase:
         try:
             if payload:
                 self.logger.debug("Payload: {}".format(payload))
-            consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
-            token = oauth2.Token(key=self.access_token, secret=self.access_token_secret)
+            consumer = oauth2.Consumer(key=self.oauth_creds.consumer_key, secret=self.oauth_creds.consumer_secret)
+            token = oauth2.Token(key=self.oauth_creds.access_token, secret=self.oauth_creds.access_token_secret)
             client = oauth2.Client(consumer, token)
-            resp, content = client.request( url, method=http_method.name, body=payload, headers=headers)
+            resp, content = client.request(url, method=http_method.name, body=payload, headers=headers)
         except httplib2.HttpLib2Error as e:
             service_response = WebServiceResponse(0, "", str(e))
             return service_response
@@ -67,7 +59,8 @@ class WebServiceBase:
         self.logger.debug("Response json: {}".format(content))
         return service_response
 
-    def loads_json(self, myjson):
+    @staticmethod
+    def loads_json(myjson):
         try:
             return json.loads(myjson.decode("utf-8"))
         except ValueError:

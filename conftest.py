@@ -27,7 +27,7 @@ def setup_logging():
     logger = logging.getLogger(Config.LOGGER_ID)
     logger.setLevel(_config.logging_level)
     # create file handler which logs even debug messages
-    fh = logging.handlers.RotatingFileHandler(log_file_path, maxBytes=50000, backupCount=5)
+    fh = logging.handlers.RotatingFileHandler(log_file_path, maxBytes=MAX_LOG_SIZE, backupCount=5)
     fh.setLevel(_config.logging_level)
     fh.doRollover()
     # create console handler with a higher log level
