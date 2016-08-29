@@ -58,7 +58,7 @@ class TestTwitterCRUD:
         assert response_record.find_record_with_status_text(tweet_text), \
             "Could not find record with posted text in timeline"
 
-    def test_delete_from_timeline(self):
+    def test_delete_status_from_timeline(self):
         # Post a status so we can delete it.
         post_tweet_response = self.post_to_timeline()
         assert post_tweet_response.id is not None
