@@ -4,7 +4,8 @@ import pytest
 import conftest
 from Config import Config
 from DataObjects.PostStatusRequest import PostStatusRequest
-from DataObjects.PostStatusResponse import PostStatusResponse
+from DataObjects.StatusResponse import StatusResponse
+from DataObjects.StatusResponses import StatusResponses
 from Helpers.CredsContainer import CredsContainer
 from WebServicesClients.TwitterStatusesService import TwitterStatusesService
 from Helpers import TestHelpers
@@ -127,7 +128,7 @@ class TestTwitterCRUD:
     def get_timeline(self):
         response = self.twitter_service.get_home_timeline()
         TestHelpers.verify_http_response(response, 200, "Get Twitter Account Timeline")
-        response_record = PostStatusResponse.list_from_dict(response.response_json)
+        response_record = StatusResponses.list_from_dict(response.response_json)
         return response_record
 
     def post_to_timeline(self, tweet_text=None):
@@ -138,7 +139,7 @@ class TestTwitterCRUD:
         self.logger.debug("Post status payload = {}".format(payload.create_query_string()))
         response = self.twitter_service.post_tweet(payload.create_query_string())
         TestHelpers.verify_http_response(response, 200, "Post to Timeline")
-        response_record = PostStatusResponse.from_dict(response.response_json)
+        response_record = StatusResponse.from_dict(response.response_json)
         return response_record
 
     def delete_status_from_timeline(self, status_id, ignore_status=False):
@@ -148,5 +149,5 @@ class TestTwitterCRUD:
         else:
             # if we did ignore status, do not parse the response.
             return None
-        response_record = PostStatusResponse.from_dict(response.response_json)
+        response_record = StatusResponse.from_dict(response.response_json)
         return response_record
